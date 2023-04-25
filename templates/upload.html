@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Image Uploader</title>
+    <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    body {
+      background-color: rgb(42, 47, 79);
+      color: rgb(253, 226, 243);
+    }
+
+    #captureBtn,
+    #uploadBtn {
+      background-color: rgb(145, 127, 179);
+      color: rgb(253, 226, 243);
+      border: none;
+      padding: 10px 20px;
+      margin: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #captureBtn:hover,
+    #uploadBtn:hover {
+      background-color: rgb(229, 190, 236);
+    }
+
+    #errorMsg {
+      color: red;
+    }
+
+    h1 {
+      margin-top: 50px;
+      margin-bottom: 30px;
+    }
+
+    form {
+      display: inline-block;
+      margin-bottom: 30px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    label {
+      background-color: #0095ff;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    label:hover {
+      background-color: #0077cc;
+    }
+
+    button {
+      background-color: #0095ff;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.2s ease-in-out;
+    }
+
+    button:hover {
+      background-color: #0077cc;
+    }
+
+    video {
+      display: block;
+      margin: 0 auto;
+      border: 1px solid #ddd;
+    }
+
+    img {
+      display: block;
+      margin: 0 auto;
+      margin-top: 20px;
+      border: 1px solid #ddd;
+      max-width: 640px;
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Upload or Capture an Image</h1>
+  <form id="upload-form" action="/upload" method="POST" enctype="multipart/form-data">
+    <input type="file" name="image" id="upload" accept="image/*">
+    <label for="upload">Upload Image</label>
+    <input type="submit" value="Upload" style="display: none">
+    <input type="file" id="fileInput" name="image" accept="image/*" style="display:none">
+    <button id="uploadBtn" onclick="document.getElementById('fileInput').click();">Submit Image</button>
+
+  </form>
+  <br>
+  <button id="capture-btn">Capture Image</button>
+  <br>
+  <video id="video" style="width:640px;height:480px"></video>
+  <canvas id="canvas" style="display:none"></canvas>
+  <img id="preview" style="display:none">
+  <script>
+    // Get access to the camera
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(function (stream) {
+        var video = document.getElementById("video");
+        video.srcObject = stream;
+        video.play();
+      })
+      .catch(function (err) {
+        console.log("An error occurred: " + err);
+      });
+
+    // Capture the image
+    var captureBtn = document.getElementById("capture-btn");
+    var video = document.getElementById("video");
+    var canvas = document.getElementById("canvas");
+    var context = canvas.getContext('2d');
+    var preview = document.getElementById("preview");
+    captureBtn.addEventListener("click", function () {
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      preview.src = canvas.toDataURL();
+      preview.style.display = "block";
+      canvas.toBlob(function (blob) {
+        var formData = new FormData();
+        formData.append('image', blob, 'image.jpg');
+        fetch(`${document.URL}upload`, {
+          method: 'POST',
+          body: formData
+        })
+          .then(function (response) {
+            return response.text();
+          })
+          .then(function (data) {
+            console.log(data);
+          })
+          .catch(function (error) {
+            console.error(error);
+          });
+      });
+    });
+  </script>
+</body>
+
+
+</html>
