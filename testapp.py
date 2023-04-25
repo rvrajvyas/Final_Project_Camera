@@ -40,7 +40,7 @@ def make_ocr():
 
 @app.route('/',methods=['GET', 'POST'])
 def test():
-    return render_template('result.html')
+    return render_template('test.html')
 
 @app.route('/result',methods=['GET','POST'])
 def ocr_result():
