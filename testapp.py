@@ -38,11 +38,11 @@ def allowed_file(filename):
 def make_ocr():
     return
 
-@app.route('/',methods=['GET', 'POST'])
+@app.route('/')
 def test():
-    return render_template('result.html')
+    return render_template('test.html')
 
-@app.route('/result',methods=['GET','POST'])
+@app.route('/result',methods=['POST'])
 def ocr_result():
     file = request.files['file']
     if file and allowed_file(file.filename):
