@@ -1,26 +1,9 @@
-import google.oauth2.credentials
-import requests
 import os
 import base64
 import io
-import flask_uploads
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from google.oauth2.credentials import Credentials
 from flask import Flask, render_template, request , redirect, url_for 
-from flask_uploads import UploadSet, IMAGES, configure_uploads
-
 from werkzeug.utils import secure_filename
-
-#Importing necessary libraries
 import cv2
-import numpy as np
-from matplotlib import pyplot as plt
-from scipy.ndimage import interpolation as inter
-import tensorflow as tf
-import os
-import glob
-import imutils
 
 UPLOAD_FOLDER = 'C:\\JS_Projects\\Final_Project_Camera\\uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
